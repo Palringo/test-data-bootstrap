@@ -1,0 +1,98 @@
+[
+  {
+    "ParameterValue": "ENV02,DEFAULT",
+    "ParameterKey": "EnvironmentVariable02"
+  },
+  {
+    "ParameterValue": "ENV01,DEFAULT",
+    "ParameterKey": "EnvironmentVariable01"
+  },
+  {
+    "ParameterValue": "",
+    "ParameterKey": "TaskRoleArn"
+  },
+  {
+    "ParameterValue": "ENV04,DEFAULT",
+    "ParameterKey": "EnvironmentVariable04"
+  },
+  {
+    "ParameterValue": "ENV03,DEFAULT",
+    "ParameterKey": "EnvironmentVariable03"
+  },
+  {
+    "ParameterValue": "false",
+    "ParameterKey": "RedisCache"
+  },
+  {
+    "ParameterValue": "ENV06,DEFAULT",
+    "ParameterKey": "EnvironmentVariable06"
+  },
+  {
+    "ParameterValue": "ENV05,DEFAULT",
+    "ParameterKey": "EnvironmentVariable05"
+  },
+  {
+    "ParameterValue": "ENV08,DEFAULT",
+    "ParameterKey": "EnvironmentVariable08"
+  },
+  {
+    "ParameterValue": "64",
+    "ParameterKey": "Memory"
+  },
+  {
+    "ParameterValue": "CPUUtilization",
+    "ParameterKey": "ScalingMetric"
+  },
+  {
+    "ParameterValue": "ENV07,DEFAULT",
+    "ParameterKey": "EnvironmentVariable07"
+  },
+  {
+    "ParameterValue": "/healthcheck",
+    "ParameterKey": "HTTPHealthCheckTarget"
+  },
+  {
+    "ParameterValue": "10",
+    "ParameterKey": "Cpu"
+  },
+  {
+    "ParameterValue": "ENV09,DEFAULT",
+    "ParameterKey": "EnvironmentVariable09"
+  },
+  {
+    "ParameterValue": "DEBUG",
+    "ParameterKey": "LogLevel"
+  },
+  {
+    "ParameterValue": "",
+    "ParameterKey": "RWDatabaseUsername"
+  },
+  {
+    "ParameterValue": "cache.t2.micro",
+    "ParameterKey": "RedisCacheInstanceType"
+  },
+  {
+    "ParameterValue": "servicetemplate",
+    "ParameterKey": "ServiceName"
+  },
+  {
+    "ParameterValue": "9",
+    "ParameterKey": "Version"
+  },
+  {
+    "ParameterValue": "true",
+    "ParameterKey": "HTTPLoadBalancer"
+  },
+  {
+    "ParameterValue": "staging",
+    "ParameterKey": "Environment"
+  },
+  {
+    "ParameterValue": "****",
+    "ParameterKey": "RWDatabasePassword"
+  },
+  {
+    "ParameterValue": "ENV10,DEFAULT",
+    "ParameterKey": "EnvironmentVariable10"
+  }
+]
