@@ -1,0 +1,53 @@
+
+
+groupSizeLimit: 
+  maxOfficialGroupSize: 20000
+ 
+dbSetup:
+  host: localhost
+  port: 3306
+  user: root
+  password: root
+  database: switchboard
+  charset: utf8mb4
+  timezone: utc
+  waitForConnections: true,
+
+cache:
+  host: localhost
+  port: 6379
+  expiry_secs: 900
+
+  
+amqp:
+  vhosts:
+    /:
+      connection:
+        hostname: localhost
+        port: 5672
+        adminPort: 15672
+        user: guest
+        password: guest
+      queues:
+        group.group.groupUpdate:
+          purge: true
+        group.group.groupSubscriberUpdate:
+          purge: true
+        group.delete:
+          assert: true
+          purge: true
+        group.create:
+          assert: true
+          purge: true
+      bindings:
+        groupDelete:
+          source: group
+          destination: group.delete
+          bindingKey: group.*.operation.delete
+        groupCreate:
+          source: group
+          destination: group.create
+          bindingKey: group.*.operation.create
+  defaults:
+    subscriptions:
+      deferCloseChannel: 0
