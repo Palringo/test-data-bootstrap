@@ -1,14 +1,16 @@
-#Generate Group subscribers
+# Generate Group subscribers #
 
-##Scope
+
+## Scope ##
 * This script is used to generate a configured number of subscribers and put them in a group.
 
-##Who should use it?
+## Who should use it? ##
 * This script is going to be used by QA to simulate a senario for groups with large number of memebers
 
-##How to use it?
+## How to use it? ##
 
-You should call a function "generateGroupsWithDetails" passing group name if needed.
+* You should call a function "generateGroupsWithDetails" passing group name if needed.
 
-#****CAUTION
-Please don't run it on production DB, it is only meant for Testing.
+# :exclamation: CAUTION
+
+:exclamation: Please don't run it on production DB, it is only meant for Testing.
