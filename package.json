@@ -1,50 +1,40 @@
 {
   "name": "service-template",
-  "version": "0.0.1",
-  "description": "Template for our REST services using Nodejs, Swagger and Express",
+  "version": "1.0.0",
+  "description": "A repository containing all scripts to generate data on stagging DB",
   "main": "app.js",
   "license": "BSD",
   "engines": {
     "node": ">=7.9.0"
   },
-  "dependencies": {
-    "@palringo/cache": "^2.0.0",
-    "@palringo/constants": "^1.0.1",
+  "dependencies": { 
+    "@palringo/constants": "^1.7.0", 
+    "@palringo/logger": "^1.3.2",
     "@palringo/db": "^1.3.0",
-    "@palringo/error": "^1.0.0",
-    "@palringo/logger": "^1.3.1",
-    "@palringo/pubsub": "^1.2.0",
-    "@palringo/verify": "^1.0.0",
-    "config": "^1.28.1",
-    "express": "^4.14.0",
-    "http-status-codes": "^1.3.0",
-    "node-dogstatsd": "^0.0.7",
-    "swagger-express-mw": "^0.7.0",
-    "sway": "git+https://github.com/apigee-127/sway.git#6d833908acebd288093477cf3f99076fa47634f9"
+    "@palringo/error": "^1.0.0",   
+    "@palringo/verify": "^1.1.0", 
+    "config": "^1.28.1" 
   },
   "devDependencies": {
-    "@palringo/eslint-config": "^1.6.1",
-    "dockerode": "^3.2.0",
-    "eslint": "^6.8.0",
+    "@palringo/eslint-config": "^1.6.2", 
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "dockerode": "^2.5.8",
+    "eslint": "^7.15.0",
     "eslint-plugin-classes": "^0.1.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "mocha": "^7.1.1",
-    "nock": "^12.0.3",
-    "supertest": "^4.0.2"
+    "eslint-plugin-promise": "^4.2.1", 
+    "mocha": "^7.2.0",
+    "mysql2": "^1.7.0"
   },
   "publishConfig": {
     "registry": "http://nexus.mng.palringo.aws/nexus/content/repositories/NPM/"
   },
   "scripts": {
-    "style": "./node_modules/.bin/eslint -c ./node_modules/@palringo/eslint-config/.eslintrc.json *.js **/*.js --fix",
-    "doc": "rm -rf docs; ./node_modules/.bin/jsdoc --destination ./docs -r README.md *.js api",
-    "pretest": "./node_modules/.bin/eslint -c ./node_modules/@palringo/eslint-config/.eslintrc.json --ext .js ./",
-    "test": "NODE_ENV=test mocha --delay --exit --recursive --require ./test/fixtures/integration-bootstrap.js --timeout 2000 ./test",
-    "test-unit": "mocha ./test/unit --recursive --exit",
-    "test-integration": "NODE_ENV=test mocha --delay --exit --recursive --require ./test/fixtures/integration-bootstrap.js --timeout 2000 ./test/integration",
-    "start": "node app.js",
-    "preversion": "npm test",
-    "postversion": "git push && git push --tags"
+    "pretest": "./node_modules/.bin/eslint -c ./node_modules/@palringo/eslint-config/.eslintrc.json \"*.js\" \"**/*.js\"",
+    "test": "NODE_ENV=test mocha \"./test/**/*.js\"",
+    "test-unit": "mocha --no-config \"./test/unit/**/*.js\"",
+    "test-integration": "NODE_ENV=test mocha \"./test/integration/**/*.js\"",
+    "start": "node app.js"
   },
   "eslintConfig": {
     "extends": [
