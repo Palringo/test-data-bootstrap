@@ -9,7 +9,7 @@
 
 ## How to use it? ##
 
-* You should call a function "generateGroupsWithDetails" passing group name if needed.
+* You should call a function "generateGroupsWithDetails" passing group name if needed, then it will generate the required number of subscriber then join them to group.
 
 # :exclamation: CAUTION
 
