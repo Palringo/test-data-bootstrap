@@ -247,52 +247,7 @@ module.exports = {
         '  CONSTRAINT `sb_group_premium_expiry_ibfk_1` FOREIGN KEY (`gruop`) REFERENCES `sb_group` (`id`) ON DELETE CASCADE' +
         ') ENGINE=InnoDB DEFAULT CHARSET=utf8',
 
-    SB_BOTS_BOT_TYPE: 'CREATE TABLE `sb_bots`.`bot_type` (' +
-        '  `bot_type_id` int(4) unsigned NOT NULL AUTO_INCREMENT,' +
-        '  `name` varchar(100) NOT NULL,' +
-        '  PRIMARY KEY (`bot_type_id`)' +
-        ') ENGINE=InnoDB DEFAULT CHARSET=utf8',
-
-    SB_BOTS_BOT: 'CREATE TABLE `sb_bots`.`bot` (' +
-        '  `bot_id` int(10) unsigned NOT NULL AUTO_INCREMENT,' +
-        '  `bot_type_id` int(4) unsigned NOT NULL,' +
-        '  `name` varchar(100) NOT NULL,' +
-        '  `description` varchar(255) NOT NULL,' +
-        '  `purchase_logic_bot_id` int(10) unsigned DEFAULT NULL,' +
-        '  `manage_url` varchar(50) DEFAULT NULL,' +
-        '  `is_removed` tinyint(1) unsigned DEFAULT NULL,' +
-        '  `created_at` datetime NOT NULL,' +
-        '  `updated_at` datetime NOT NULL,' +
-        '  `display_name` varchar(100) NOT NULL DEFAULT "",' +
-        '  `api_version` varchar(8) NOT NULL DEFAULT "",' +
-        '  `gamepad_url` varchar(255) NOT NULL DEFAULT "",' +
-        '  `gamepane_url` varchar(255) NOT NULL DEFAULT "",' +
-        '  `icon_url` varchar(255) NOT NULL DEFAULT "",' +
-        '  `assets_url` varchar(255) NOT NULL,' +
-        '  `default_keyboard` tinyint(1) unsigned NOT NULL DEFAULT 1,' +
-        '  `requires_pane` tinyint(1) unsigned NOT NULL DEFAULT 0,' +
-        '  `keyboard_open` tinyint(1) unsigned NOT NULL DEFAULT 0,' +
-        '  `client_type` varchar(255) NOT NULL DEFAULT "normal",' +
-        '  `language` varchar(255) NOT NULL DEFAULT "en",' +
-        '  `bot_command_prefix` varchar(100) NOT NULL DEFAULT "",' +
-        '  `gamepad_updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
-        '  PRIMARY KEY (`bot_id`),' +
-        '  KEY `FK_bot_type_id` (`bot_type_id`),' +
-        '  KEY `purchase_logic_bot_id` (`purchase_logic_bot_id`),' +
-        '  CONSTRAINT `FK_bot_type_id` FOREIGN KEY (`bot_type_id`) REFERENCES `sb_bots`.`bot_type` (`bot_type_id`),' +
-        '  CONSTRAINT `bot_ibfk_1` FOREIGN KEY (`purchase_logic_bot_id`) REFERENCES `sb_bots`.`bot` (`bot_id`)' +
-        ') ENGINE=InnoDB DEFAULT CHARSET=utf8',
-
-    SB_BOTS_BOT_SUBSCRIBER: 'CREATE TABLE `sb_bots`.`bot_subscriber` (' +
-        '  `bot_id` int(10) unsigned NOT NULL,' +
-        '  `subscriber_id` bigint(20) unsigned NOT NULL,' +
-        '  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,' +
-        '  PRIMARY KEY (`bot_id`,`subscriber_id`),' +
-        '  UNIQUE KEY `subscriber_id` (`subscriber_id`),' +
-        '  CONSTRAINT `bot_subscriber_ibfk_1` FOREIGN KEY (`bot_id`) REFERENCES `sb_bots`.`bot` (`bot_id`) ON DELETE CASCADE' +
-        ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci',
-
-    SB_GROUP_BOT_EXPIRY: 'CREATE TABLE `sb_group_bot_expiry` (' +
+        SB_GROUP_BOT_EXPIRY: 'CREATE TABLE `sb_group_bot_expiry` (' +
         ' `group_bot_expiry_id` int(10) unsigned NOT NULL AUTO_INCREMENT,' +
         ' `group_id` bigint(20) unsigned NOT NULL,' +
         ' `bot_id` int(10) unsigned NOT NULL,' +

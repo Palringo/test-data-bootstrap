@@ -1,7 +1,6 @@
 /* eslint-disable no-process-exit,promise/catch-or-return,no-loop-func */
 
 // Third party dependencies
-const amqp = require('amqplib');
 const config = require('config');
 const Docker = require('dockerode');
 
@@ -32,8 +31,6 @@ const docker = new Docker();
 const logger = loggerFactory.getLogger('IntegrationTestBootstrap');
 
 let mysqlContainer;
-let rabbitContainer;
-let redisContainer;
 
 // Constants
 const CLEANUP_TIMEOUT = 50000;
@@ -45,13 +42,6 @@ const MYSQL_DATABASE = dbSetupCfg.database;
 const MYSQL_PORT = dbSetupCfg.port.toString();
 const MYSQL_ROOT_PASSWORD = dbSetupCfg.password;
 
-const RABBIT_IMAGE = 'rabbitmq:latest';
-const RABBIT_HOST = config.get('amqp.vhosts./.connection.hostname');
-const RABBIT_PORT = config.get('amqp.vhosts./.connection.port').toString();
-const RABBIT_ADMIN_PORT = config.get('amqp.vhosts./.connection.adminPort').toString();
-
-const REDIS_IMAGE = 'redis:latest';
-const REDIS_PORT = config.get('cache.port').toString();
 
 async function pullMySqlContainer() {
     const options = {
@@ -65,48 +55,6 @@ async function pullMySqlContainer() {
 
         await new Promise((resolve, reject) => {
             docker.pull(MYSQL_IMAGE, (err, stream) => {
-                if (err) {
-                    return reject(err);
-                }
-                return docker.modem.followProgress(stream, resolve);
-            });
-        });
-    }
-}
-
-async function pullRabbitContainer() {
-    const options = {
-        filters: `{"reference": ["${RABBIT_IMAGE}"]}`,
-    };
-
-    const images = await docker.listImages(options);
-
-    if (images.length === 0) {
-        logger.info(`Pulling ${RABBIT_IMAGE} docker image`);
-
-        await new Promise((resolve, reject) => {
-            docker.pull(RABBIT_IMAGE, (err, stream) => {
-                if (err) {
-                    return reject(err);
-                }
-                return docker.modem.followProgress(stream, resolve);
-            });
-        });
-    }
-}
-
-async function pullRedisContainer() {
-    const options = {
-        filters: `{"reference": ["${REDIS_IMAGE}"]}`,
-    };
-
-    const images = await docker.listImages(options);
-
-    if (images.length === 0) {
-        logger.info(`Pulling ${REDIS_IMAGE} docker image`);
-
-        await new Promise((resolve, reject) => {
-            docker.pull(REDIS_IMAGE, (err, stream) => {
                 if (err) {
                     return reject(err);
                 }
@@ -143,67 +91,10 @@ async function createMySqlContainer() {
     await mysqlContainer.start();
 }
 
-async function createRabbitContainer() {
-    rabbitContainer = await docker.createContainer({
-        Image: RABBIT_IMAGE,
-        Name: 'integration-test-rabbit',
-        Hostname: 'integration-test-rabbit',
-        HostConfig: {
-            PortBindings: {
-                [`${RABBIT_PORT}/tcp`]: [
-                    {
-                        HostPort: RABBIT_PORT,
-                    },
-                ],
-                [`${RABBIT_ADMIN_PORT}/tcp`]: [
-                    {
-                        HostPort: RABBIT_ADMIN_PORT,
-                    },
-                ],
-            },
-        },
-    });
-
-    await rabbitContainer.start();
-}
-
-async function createRedisContainer() {
-    redisContainer = await docker.createContainer({
-        Image: REDIS_IMAGE,
-        Name: 'integration-test-rabbit',
-        Hostname: 'integration-test-rabbit',
-        HostConfig: {
-            PortBindings: {
-                [`${REDIS_PORT}/tcp`]: [
-                    {
-                        HostPort: REDIS_PORT,
-                    },
-                ],
-            },
-        },
-    });
-
-    await redisContainer.start();
-}
-
 async function destroyMySqlContainer() {
     if (mysqlContainer) {
         await mysqlContainer.stop();
         await mysqlContainer.remove();
-    }
-}
-
-async function destroyRabbitContainer() {
-    if (rabbitContainer) {
-        await rabbitContainer.stop();
-        await rabbitContainer.remove();
-    }
-}
-
-async function destroyRedisContainer() {
-    if (redisContainer) {
-        await redisContainer.stop();
-        await redisContainer.remove();
     }
 }
 
@@ -233,78 +124,20 @@ async function checkConnectivityToMysqlContainer() {
     }
 }
 
-async function checkConnectivityToRabbitContainer() {
-    let connecting = true;
-    let reconnectTimeout;
-
-    const connectionTimeout = setTimeout(() => {
-        logger.error(`Unable to connect to rabbit container in ${CONNECTION_TIMEOUT} ms, exiting`);
-        clearTimeout(reconnectTimeout);
-        destroyRabbitContainer()
-            .catch(() => logger.error('Unable to destroy rabbit container, manual cleanup required'))
-            .then(() => process.exit());
-    }, CONNECTION_TIMEOUT);
-
-    // eslint-disable-next-line no-restricted-syntax
-    while (connecting) {
-        try {
-            const connection = await amqp.connect(`amqp://${RABBIT_HOST}:${RABBIT_PORT}`);
-            await connection.close();
-            clearTimeout(connectionTimeout);
-            connecting = false;
-        } catch (err) {
-            await new Promise((resolve) => {
-                reconnectTimeout = setTimeout(() => resolve(), RETRY_TIMEOUT);
-            });
-        }
-    }
-}
-
-async function checkConnectivityToRedisContainer() {
-    let connecting = true;
-    let reconnectTimeout;
-
-    const connectionTimeout = setTimeout(() => {
-        logger.error(`Unable to connect to redis container in ${CONNECTION_TIMEOUT} ms, exiting`);
-        clearTimeout(reconnectTimeout);
-        destroyRedisContainer()
-            .catch(() => logger.error('Unable to destroy redis container, manual cleanup required'))
-            .then(() => process.exit());
-    }, CONNECTION_TIMEOUT);
-
-    // eslint-disable-next-line no-restricted-syntax
-    while (connecting) {
-        try {
-            clearTimeout(connectionTimeout);
-            connecting = false;
-        } catch (err) {
-            await new Promise((resolve) => {
-                reconnectTimeout = setTimeout(() => resolve(), RETRY_TIMEOUT);
-            });
-        }
-    }
-}
-
 (async() => {
     try {
         logger.info('Creating containers');
 
         await Promise.all([
-            pullMySqlContainer(),
-            pullRabbitContainer(),
-            pullRedisContainer(),
+            pullMySqlContainer(), 
         ]);
 
         await Promise.all([
-            createMySqlContainer(),
-            createRabbitContainer(),
-            createRedisContainer(),
+            createMySqlContainer(), 
         ]);
 
         await Promise.all([
             checkConnectivityToMysqlContainer(),
-            checkConnectivityToRabbitContainer(),
-            checkConnectivityToRedisContainer(),
         ]);
 
         // Create databases
@@ -342,8 +175,6 @@ async function checkConnectivityToRedisContainer() {
         logger.error('Problem creating container: ', err);
         Promise.all([
             destroyMySqlContainer(),
-            destroyRabbitContainer(),
-            destroyRedisContainer(),
         ])
             .catch(() => logger.error('Unable to destroy containers, manual cleanup required'))
             .then(() => process.exit());
@@ -355,8 +186,6 @@ async function checkConnectivityToRedisContainer() {
         try {
             await Promise.all([
                 destroyMySqlContainer(),
-                destroyRabbitContainer(),
-                destroyRedisContainer(),
             ]);
         } catch (err) {
             logger.error('Unable to destroy mysql container, manual cleanup required');
